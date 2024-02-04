@@ -1,0 +1,47 @@
+_BASE_: "../Base_det.yaml"
+
+MODEL:
+#  WEIGHTS: "/media/WD_2T/chill_research/deepsolo/pretrain_weights/tt_swin-small_finetune_synth-tt-mlt-13-15.pth"
+  WEIGHTS: "/media/WD_2T/chill_research/deepsolo/tools/output/R50/container/fc_head_qc+_SwinS/best_model.pth"
+  TRANSFORMER:
+    VOC_SIZE: 96
+    NUM_POINTS: 50
+    NUM_QUERIES: 100
+    LOSS:
+        BEZIER_SAMPLE_POINTS: 50
+        BEZIER_CLASS_WEIGHT: 1.0
+        BEZIER_COORD_WEIGHT: 0.5
+        POINT_CLASS_WEIGHT: 1.0
+        POINT_COORD_WEIGHT: 0.5
+        POINT_TEXT_WEIGHT: 1.0 #0.5
+        BOUNDARY_WEIGHT: 0.25
+
+DATASETS:
+  TRAIN: ("ctw1500_train_96voc",)
+  TEST: ("ctw1500_test",)
+
+INPUT:
+  ROTATE: False
+  MIN_SIZE_TRAIN: (512, 640, 768, 896)
+  MAX_SIZE_TRAIN: 1200
+  MIN_SIZE_TEST: 1000
+  MAX_SIZE_TEST: 1200
+
+SOLVER:
+#  LR_SCHEDULER_NAME: "WarmupMultiStepLR"
+  LR_SCHEDULER_NAME: "WarmupCosineLR"
+  IMS_PER_BATCH: 1
+  BASE_LR: 5e-5
+#  LR_BACKBONE: 3e-4
+  WARMUP_ITERS: 2000
+#  STEPS: (8000,)
+  MAX_ITER: 400000
+  CHECKPOINT_PERIOD: 5000
+
+TEST:
+  EVAL_PERIOD: 10000
+  DETECTIONS_PER_IMAGE: 100
+#  LEXICON_TYPE: None
+
+#OUTPUT_DIR: "output/R50/container/test"
+OUTPUT_DIR: "output/R50/container/fc_head_qc+_SwinS"
